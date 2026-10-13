@@ -1,4 +1,4 @@
-import type { AuthResponse, LoginFormValues, RegisterFormValues } from '../types/auth';
+﻿import type { AuthResponse, LoginFormValues, RegisterFormValues } from '../types/auth';
 import { fetcher } from './api';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080/api';

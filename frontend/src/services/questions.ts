@@ -1,8 +1,7 @@
-import type { QuestionItem, QuestionPage, QuestionQueryParams, QuestionRequest } from '../types/question';
-import { fetcher } from './api';
+﻿import type { QuestionItem, QuestionPage, QuestionQueryParams, QuestionRequest } from '../types/question';
+import { AUTH_TOKEN_KEY, fetcher } from './api';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080/api';
-const AUTH_TOKEN_KEY = 'algoatlas_token';
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem(AUTH_TOKEN_KEY);

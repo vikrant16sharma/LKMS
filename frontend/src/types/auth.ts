@@ -10,6 +10,13 @@ export interface RegisterFormValues {
 }
 
 export interface AuthResponse {
-  token: string;
-  tokenType: string;
+  token?: string;
+  accessToken?: string;
+  tokenType?: string;
+  user?: {
+    id?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
+  };
 }
