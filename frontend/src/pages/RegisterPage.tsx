@@ -1,20 +1,37 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import type React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { AUTH_TOKEN_KEY } from '../services/api';
+import { register } from '../services/auth';
 import type { RegisterFormValues } from '../types/auth';
 
 export function RegisterPage() {
   const [form, setForm] = useState<RegisterFormValues>({ fullName: '', email: '', password: '' });
+  const navigate = useNavigate();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [event.target.name]: event.target.value });
+    setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('register', form);
+
+    try {
+      const response = await register(form);
+      const token = response.token ?? response.accessToken;
+
+      if (!token) {
+        throw new Error('Authentication token missing from response');
+      }
+
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+      navigate('/');
+    } catch (error) {
+      console.error(error);
+      alert('Unable to create account. Please try again.');
+    }
   };
 
   return (

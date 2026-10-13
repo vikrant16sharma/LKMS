@@ -1,33 +1,38 @@
-import { useState } from 'react';
-import type React from 'react';
-import { Link } from 'react-router-dom';
+﻿import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import type { LoginFormValues } from '../types/auth';
-import { useNavigate } from 'react-router-dom';
+import { AUTH_TOKEN_KEY } from '../services/api';
 import { login } from '../services/auth';
+import type { LoginFormValues } from '../types/auth';
 
 export function LoginPage() {
   const [form, setForm] = useState<LoginFormValues>({ email: '', password: '' });
   const navigate = useNavigate();
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [event.target.name]: event.target.value });
+    setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  try {
-    const response = await login(form);
+    try {
+      const response = await login(form);
+      const token = response.token ?? response.accessToken;
 
-    localStorage.setItem("token", response.token);
+      if (!token) {
+        throw new Error('Authentication token missing from response');
+      }
 
-    navigate("/");
-  } catch (error) {
-    console.error(error);
-    alert("Invalid email or password");
-  }
-};
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+      navigate('/');
+    } catch (error) {
+      console.error(error);
+      alert('Invalid email or password');
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 via-white to-slate-100 px-4 py-10">
       <div className="w-full max-w-md rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60">
